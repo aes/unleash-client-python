@@ -3,7 +3,7 @@ import random
 import logging
 import time
 
-from . import Client
+from unleash_client import client
 
 argparser = argparse.ArgumentParser(
     'unleash', description='Unleash test client',
@@ -68,7 +68,7 @@ def main(args):
     logging.basicConfig()
     logging.getLogger().setLevel(10 * max(1, 3 - ns.verbose))
 
-    client = Client(
+    un = client(
         url=ns.url,
         refresh_interval=5,
         metrics_interval=2,
@@ -76,9 +76,9 @@ def main(args):
     context = dict(kv.split('=') for kv in ns.attrs)
 
     if ns.demo:
-        demo_it(client, ns.feature, context, ns.sleep)
+        demo_it(un, ns.feature, context, ns.sleep)
     else:
-        result = client.enabled(ns.feature, context)
+        result = un.enabled(ns.feature, context)
         print('yes' if result else 'no')
 
 

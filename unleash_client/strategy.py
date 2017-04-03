@@ -16,11 +16,13 @@ class Default:
 
 
 class GradualRolloutRandom:
-    def __init__(self, **kw):
-        self.percentage = int(kw.get('percentage', 0))
+    die = random.randint
+
+    def __init__(self, percentage=0, **kw):
+        self.percentage = int(percentage)
 
     def __call__(self, **kw):
-        return random.randint(0, 99) < self.percentage
+        return self.die(0, 99) < self.percentage
 
 
 class GradualRolloutFactory:
