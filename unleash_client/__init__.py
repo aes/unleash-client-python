@@ -47,10 +47,11 @@ class Fetcher(PeriodicalOperation):
         self.etag = ''
 
     def run(self):
+        # noinspection PyBroadException
         try:
             self.log.debug("ETag: %r", self.etag)
             headers = {'If-None-Match': self.etag}
-            res = requests.get(url=self.url, headers=headers)
+            res = requests.get(url=self.url, headers=headers, timeout=3.0)
 
             if res.status_code == 304:
                 self.log.debug("use cached value")
@@ -61,8 +62,12 @@ class Fetcher(PeriodicalOperation):
                 self.cache = res.json(object_hook=FrozenDict)
                 return self.cache
             else:
-                self.log.warning("raise for status")
                 res.raise_for_status()
+        except:
+            log.exception("Exception fetching %r", self.url)
+            if self.cache is PeriodicalOperation:
+                self.cache = {}
+            return self.cache
         finally:
             self.last = self.clock()
             self.lock.release()
@@ -80,6 +85,7 @@ class Reporter(PeriodicalOperation):
         return datetime.datetime.fromtimestamp(t).strftime('%FT%TZ')
 
     def run(self):
+        # noinspection PyBroadException
         try:
             now = self.clock()
             start, stop, self.last = self.last, now, now
@@ -100,6 +106,8 @@ class Reporter(PeriodicalOperation):
             self.log.info('%r', report)
             res = requests.post(self.url, json=report)
             self.log.info('%r', res.status_code)
+        except:
+            pass
         finally:
             self.lock.release()
 
