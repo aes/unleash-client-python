@@ -31,4 +31,5 @@ class Feature:
 
     def report(self):
         result, self.choices = self.choices, {False: 0, True: 0}
+        log.info('Feature report for %r: %r', self.feature, result)
         return {'yes': result[True], 'no': result[False]}
