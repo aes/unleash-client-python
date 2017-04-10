@@ -1,9 +1,19 @@
+import logging
+
+log = logging.getLogger(__name__)
+
+
 def feature_gates(strategies, feature):
     tests = []
     for args in feature['strategies']:
         name, parameters = args['name'], args['parameters']
-        test = strategies[name](**parameters)
-        tests.append(test)
+        strategy = strategies.get(name)
+        if strategy:
+            test = strategy(**parameters)
+            tests.append(test)
+        else:
+            log.warning('Could not find strategy %r%r', name, parameters)
+            tests.append(lambda *a, **k: False)
     return tests
 
 
