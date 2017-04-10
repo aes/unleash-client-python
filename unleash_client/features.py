@@ -25,7 +25,8 @@ class Feature:
         self.gates = feature_gates(strategies, feature)
 
     def __call__(self, context):
-        result = self.enabled and any(g(**context) for g in self.gates)
+        result = self.enabled and (
+            not self.gates or any(g(**context) for g in self.gates))
         self.choices[result] += 1
         return result
 
