@@ -22,8 +22,8 @@ setup(
     version=__version__,
     description='Client for the Unleash feature toggle service',
     long_description=long_description,
-    url='https://github.com/aes/unleash',
-    download_url='https://github.com/aes/unleash/tarball/' + __version__,
+    url='https://github.com/aes/unleash-client-python',
+    download_url='https://github.com/aes/unleash-client-python/archive/%s.zip' % (__version__,),
     license='License :: OSI Approved :: Apache Software License',
     classifiers=[
       'Development Status :: 3 - Alpha',
